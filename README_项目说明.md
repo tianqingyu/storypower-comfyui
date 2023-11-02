@@ -19,11 +19,14 @@
   2. cuda driver安装了535的版本，使用 nvidia-smi 查看详情
 
 # 项目仓库
-  https://github.com/tianqingyu/storypower-comfyui.git
+  1. 本地开发
+    git@github.com:tianqingyu/storypower-comfyui.git
+  2. 服务器端
+    https://github.com/tianqingyu/storypower-comfyui.git
 
   说明：
   1. master分支：用于同步官方ComfyUI的代码，该分支不要动
-  2. storypower分支：基于master，增加自己的代码；如果master有更新，需要合并过来
+  2. storypower分支：基于master，增加自己的代码；如果master有更新，则从master合并
 
 # 项目目录
   /home/vantage/apps/storypower-comfyui
