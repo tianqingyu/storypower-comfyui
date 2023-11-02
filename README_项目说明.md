@@ -1,0 +1,53 @@
+# 切换普通用户
+  sug
+
+  说明：
+  1. 登录终端，尽量使用sug命令切换到普通账号，进行操作
+  2. 使用普通账号运行python应用，该账号也安装了运行环境，root用户没有安装
+
+# 开启、关闭代理
+  proxy_on
+  proxy_off
+
+# conda环境
+  1. 默认base环境，在base环境中安装了所有依赖，不用做任何切换
+  2. 查看conda虚拟环境 conda env list
+  3. 在命令行下，python 和 pip 命令都是在当前虚拟环境，使用pip安装的依赖也在当前虚拟环境中
+
+# cuda环境
+  1. cuda toolkit安装了11.7版本，有些库需要11的版本，12的版本还不支持
+  2. cuda driver安装了535的版本，使用 nvidia-smi 查看详情
+
+# 项目地址
+  /home/vantage/apps/storypower-comfyui
+
+# 输出目录
+  /home/vantage/apps/output
+
+# 临时目录
+  /home/vantage/apps/temp
+
+# 日志目录
+  /home/vantage/apps/logs
+
+# 启动命令
+  start_image.sh
+    ```
+      #!/bin/bash
+      python main.py --listen --port 39000 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+    ```
+  
+  start_video_1.sh
+    ```
+      #!/bin/bash
+      python main.py --listen --port 39001 --cuda-device 1 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+    ```
+
+  说明：
+    --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
+    --output-directory 存放输出图像、视频的目录
+
+  后台运行：
+    nohup ./start_image.sh > /home/vantage/apps/logs/comfy-image.log 2>&1 &
+    nohup ./start_video_1.sh > /home/vantage/apps/logs/comfy-video-1.log 2>&1 &
+    ...
