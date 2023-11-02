@@ -18,7 +18,14 @@
   1. cuda toolkit安装了11.7版本，有些库需要11的版本，12的版本还不支持
   2. cuda driver安装了535的版本，使用 nvidia-smi 查看详情
 
-# 项目地址
+# 项目仓库
+  https://github.com/tianqingyu/storypower-comfyui.git
+
+  说明：
+  1. master分支：用于同步官方ComfyUI的代码，该分支不要动
+  2. storypower分支：基于master，增加自己的代码；如果master有更新，需要合并过来
+
+# 项目目录
   /home/vantage/apps/storypower-comfyui
 
 # 输出目录
@@ -31,23 +38,29 @@
   /home/vantage/apps/logs
 
 # 启动命令
-  start_image.sh
-    ```
-      #!/bin/bash
-      python main.py --listen --port 39000 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
-    ```
+  start_image_1.sh: 
+    python main.py --listen --port 39000 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
   
-  start_video_1.sh
-    ```
-      #!/bin/bash
-      python main.py --listen --port 39001 --cuda-device 1 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
-    ```
+  start_image_2.sh: 
+    python main.py --listen --port 39001 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+  
+  start_video_1.sh: 
+    python main.py --listen --port 39002 --cuda-device 1 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+  
+  start_video_2.sh: 
+    python main.py --listen --port 39003 --cuda-device 2 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+  
+  start_video_3.sh: 
+    python main.py --listen --port 39004 --cuda-device 3 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
 
   说明：
-    --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
-    --output-directory 存放输出图像、视频的目录
+    1. --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
+    2. --output-directory 存放输出图像、视频的目录
+    3. 图像生成，一个显卡运行2个comfyui应用，每个应用对应1个模型，通常为一个大模型（sdxl_base等）加一个小模型（麦橘等）
+    4. 视频生成，一个显卡运行1个comfyui应用
 
   后台运行：
-    nohup ./start_image.sh > /home/vantage/apps/logs/comfy-image.log 2>&1 &
+    nohup ./start_image_1.sh > /home/vantage/apps/logs/comfy-image-1.log 2>&1 &
+    ...
     nohup ./start_video_1.sh > /home/vantage/apps/logs/comfy-video-1.log 2>&1 &
     ...
