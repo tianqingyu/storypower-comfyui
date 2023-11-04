@@ -318,11 +318,6 @@ class PromptExecutor:
     def execute(self, prompt, prompt_id, extra_data={}, execute_outputs=[]):
         nodes.interrupt_processing(False)
 
-        if "client_id" in extra_data:
-            self.server.client_id = extra_data["client_id"]
-        else:
-            self.server.client_id = None
-
         if self.server.client_id is not None:
             self.server.send_sync("execution_start", { "prompt_id": prompt_id}, self.server.client_id)
 
