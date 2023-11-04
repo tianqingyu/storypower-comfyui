@@ -90,7 +90,7 @@ class PromptServer():
         routes = web.RouteTableDef()
         self.routes = routes
         self.last_node_id = None
-        self.client_id = None
+        self.client_id = uuid.uuid4().hex
 
         self.on_prompt_handlers = []
 
@@ -468,11 +468,11 @@ class PromptServer():
                 prompt = json_data["prompt"]
                 valid = execution.validate_prompt(prompt)
                 extra_data = {}
+                extra_data["client_id"] = self.client_id
+
                 if "extra_data" in json_data:
                     extra_data = json_data["extra_data"]
 
-                if "client_id" in json_data:
-                    extra_data["client_id"] = json_data["client_id"]
                 if valid[0]:
                     prompt_id = str(uuid.uuid4())
                     outputs_to_execute = valid[2]
