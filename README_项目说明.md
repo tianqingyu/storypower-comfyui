@@ -41,20 +41,17 @@
   /home/vantage/apps/logs
 
 # 启动命令
-  start_image_1.sh: 
+  start_image.sh: 
     python main.py --listen --port 39000 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
   
-  start_image_2.sh: 
-    python main.py --listen --port 39001 --cuda-device 0 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
-  
   start_video_1.sh: 
-    python main.py --listen --port 39002 --cuda-device 1 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+    python main.py --listen --port 39001 --cuda-device 1 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
   
   start_video_2.sh: 
-    python main.py --listen --port 39003 --cuda-device 2 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+    python main.py --listen --port 39002 --cuda-device 2 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
   
   start_video_3.sh: 
-    python main.py --listen --port 39004 --cuda-device 3 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+    python main.py --listen --port 39003 --cuda-device 3 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
 
   说明：
     1. --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
@@ -64,6 +61,6 @@
 
   后台运行：
     nohup ./start_image.sh > /home/vantage/apps/logs/comfy-image.log 2>&1 &
-    ...
     nohup ./start_video_1.sh > /home/vantage/apps/logs/comfy-video-1.log 2>&1 &
-    ...
+    nohup ./start_video_2.sh > /home/vantage/apps/logs/comfy-video-2.log 2>&1 &
+    nohup ./start_video_3.sh > /home/vantage/apps/logs/comfy-video-3.log 2>&1 &
