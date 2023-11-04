@@ -63,7 +63,7 @@
     4. 视频生成，一个显卡运行1个comfyui应用
 
   后台运行：
-    nohup ./start_image_1.sh > /home/vantage/apps/logs/comfy-image-1.log 2>&1 &
+    nohup ./start_image.sh > /home/vantage/apps/logs/comfy-image.log 2>&1 &
     ...
     nohup ./start_video_1.sh > /home/vantage/apps/logs/comfy-video-1.log 2>&1 &
     ...
