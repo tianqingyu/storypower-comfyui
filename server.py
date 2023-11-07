@@ -68,7 +68,7 @@ def create_cors_middleware(allowed_origin: str):
 class PromptServer():
     def __init__(self, loop):
         PromptServer.instance = self
-
+        self.global_task_progress = {"value": 0, "max": 0}
         mimetypes.init()
         mimetypes.types_map['.js'] = 'application/javascript; charset=utf-8'
 
@@ -379,7 +379,23 @@ class PromptServer():
                 ]
             }
             return web.json_response(system_stats)
+        
+        @routes.get("/service")
+        async def get_service(request):
+            current_queue = self.prompt_queue.get_current_queue()
+            task_progress = self.global_task_progress  # 从全局task_progress字典获取信息
+            if current_queue[0]:
+                current_number = current_queue[0][0][1]
+            else:
+                current_number = []
 
+            return web.json_response({
+                "exec_info": self.prompt_queue.get_tasks_remaining(),
+                "queue_running": current_queue[0],
+                "current_number": current_number,
+                "task_progress": task_progress  # 包含task_progress信息
+            })
+        
         @routes.get("/prompt")
         async def get_prompt(request):
             return web.json_response(self.get_queue_info())
@@ -510,7 +526,11 @@ class PromptServer():
                     self.prompt_queue.delete_history_item(id_to_delete)
 
             return web.Response(status=200)
-        
+
+    def update_task_progress(self, value, total):
+        self.global_task_progress["value"] = value
+        self.global_task_progress["max"] = total
+
     def add_routes(self):
         self.app.add_routes(self.routes)
 

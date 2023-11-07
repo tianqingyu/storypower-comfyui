@@ -104,14 +104,30 @@ def prompt_worker(q, server):
 async def run(server, address='', port=8188, verbose=True, call_on_start=None):
     await asyncio.gather(server.start(address, port, verbose, call_on_start), server.publish_loop())
 
+# 创建事件循环
+loop = asyncio.get_event_loop()
+
+# 创建 PromptServer 的实例并传递事件循环对象
+server_instance = server.PromptServer(loop)
 
 def hijack_progress(server):
     def hook(value, total, preview_image):
         comfy.model_management.throw_exception_if_processing_interrupted()
+        server.update_task_progress(value, total)  # 更新任务进度
         server.send_sync("progress", {"value": value, "max": total}, server.client_id)
         if preview_image is not None:
             server.send_sync(BinaryEventTypes.UNENCODED_PREVIEW_IMAGE, preview_image, server.client_id)
     comfy.utils.set_progress_bar_global_hook(hook)
+# def hijack_progress(server):
+#     def hook(value, total, preview_image):
+#         comfy.model_management.throw_exception_if_processing_interrupted()
+#         server_instance.update_task_progress(value, total)  # 更新任务进度
+#         server.send_sync("progress", {"value": value, "max": total}, server.client_id)
+#         # 打印 global_task_progress 的值
+#         print("Global Task Progress:", server.global_task_progress)
+#         if preview_image is not None:
+#             server.send_sync(BinaryEventTypes.UNENCODED_PREVIEW_IMAGE, preview_image, server.client_id)
+#     comfy.utils.set_progress_bar_global_hook(hook)
 
 
 def cleanup_temp():
