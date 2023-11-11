@@ -56,9 +56,4 @@
   说明：
     1. --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
     2. --output-directory 存放输出图像、视频的目录
-
-  后台运行：
-    nohup ./start_image.sh > /home/vantage/apps/logs/comfy-image.log 2>&1 &
-    nohup ./start_video_1.sh > /home/vantage/apps/logs/comfy-video-1.log 2>&1 &
-    nohup ./start_video_2.sh > /home/vantage/apps/logs/comfy-video-2.log 2>&1 &
-    nohup ./start_video_3.sh > /home/vantage/apps/logs/comfy-video-3.log 2>&1 &
+    3. -u，表示使用nohup命令后台运行python项目时，不缓存日志输出
