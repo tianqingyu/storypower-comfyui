@@ -1,2 +1,2 @@
 #!/bin/bash
-python main.py --listen --port 39002 --cuda-device 2 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps
+nohup python -u main.py --listen --port 39002 --cuda-device 2 --output-directory /home/vantage/apps/output --temp-directory /home/vantage/apps > /home/vantage/apps/logs/image-2-video-2.log 2>&1 &
