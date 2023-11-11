@@ -2,6 +2,7 @@ import os
 import sys
 import asyncio
 import traceback
+from datetime import date
 
 import nodes
 import folder_paths
@@ -380,21 +381,40 @@ class PromptServer():
             }
             return web.json_response(system_stats)
         
-        @routes.get("/service")
-        async def get_service(request):
+        @routes.get("/get/task")
+        async def get_task(request):
             current_queue = self.prompt_queue.get_current_queue()
             task_progress = self.global_task_progress  # 从全局task_progress字典获取信息
+            mapped_value = 0
+            
             if current_queue[0]:
                 current_number = current_queue[0][0][1]
+                # 计算百分比进度
+                progress_percentage = (task_progress["value"] / task_progress["max"]) * 100
+                # 将百分比进度映射到你需要的范围，例如 0 到 100
+                mapped_value = (progress_percentage / 100) * 100
             else:
                 current_number = []
 
             return web.json_response({
-                "exec_info": self.prompt_queue.get_tasks_remaining(),
-                "queue_running": current_queue[0],
-                "current_number": current_number,
-                "task_progress": task_progress  # 包含task_progress信息
+                "task_total": self.prompt_queue.get_tasks_remaining(),
+                # "queue_running": current_queue[0],
+                "task_id": current_number,
+                "task_progress": mapped_value  # 包含task_progress信息
             })
+        
+        @routes.get("/file/{prompt_id}") #获取图片名称
+        async def get_history(request):
+            prompt_id = request.match_info.get("prompt_id", None)
+            data = self.prompt_queue.get_history(prompt_id=prompt_id)
+            if data is None or not data:
+                filename = {}
+            else:
+                image_name = data[prompt_id]["outputs"]["9"]["images"][0]["filename"]
+                date_str = date.today().strftime("%Y-%m-%d")
+                output_directory = os.path.join("output", date_str)
+                filename = os.path.join(output_directory, image_name)
+            return web.json_response(filename)
         
         @routes.get("/prompt")
         async def get_prompt(request):
