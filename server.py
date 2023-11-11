@@ -381,7 +381,8 @@ class PromptServer():
             }
             return web.json_response(system_stats)
         
-        @routes.get("/get/task")
+        # get task info
+        @routes.get("/task")
         async def get_task(request):
             current_queue = self.prompt_queue.get_current_queue()
             task_progress = self.global_task_progress  # 从全局task_progress字典获取信息
