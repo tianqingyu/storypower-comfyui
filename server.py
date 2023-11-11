@@ -392,7 +392,8 @@ class PromptServer():
                 # 计算百分比进度
                 progress_percentage = (task_progress["value"] / task_progress["max"]) * 100
                 # 将百分比进度映射到你需要的范围，例如 0 到 100
-                mapped_value = (progress_percentage / 100) * 100
+                mapped_value = int((progress_percentage / 100) * 100)
+
             else:
                 current_number = []
 
