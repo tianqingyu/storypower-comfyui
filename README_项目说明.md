@@ -57,3 +57,6 @@
     1. --cuda-device 0，指定显卡id，目前4卡，取值为：0, 1, 2, 3
     2. --output-directory 存放输出图像、视频的目录
     3. -u，表示使用nohup命令后台运行python项目时，不缓存日志输出
+
+# 更新custom_nodes
+  运行 update_custom_nodes_code.sh 文件
