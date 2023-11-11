@@ -8,6 +8,8 @@ import traceback
 import math
 import time
 import random
+import boto3
+import mimetypes
 
 from PIL import Image, ImageOps
 from PIL.PngImagePlugin import PngInfo
@@ -1309,6 +1311,7 @@ class SaveImage:
 
             file = f"{filename}_{counter:05}_.png"
             img.save(os.path.join(full_output_folder, file), pnginfo=metadata, compress_level=4)
+            upload_file_s3(os.path.join(full_output_folder, file))
             results.append({
                 "filename": file,
                 "subfolder": subfolder,
@@ -1716,6 +1719,37 @@ NODE_DISPLAY_NAME_MAPPINGS = {
 }
 
 EXTENSION_WEB_DIRS = {}
+def create_s3_client():
+    return boto3.client('s3',
+        region_name='ap-northeast-1',
+        aws_access_key_id='AKIASUWSZJFYOTFGWO4R',
+        aws_secret_access_key='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')
+
+def upload_file_s3(filepath):
+    try:
+        print(f">> upload {filepath} to s3, starting...")
+
+        s3_client = create_s3_client()
+        
+        parts = filepath.split("output/")
+        upload_key = "output/" + parts[1]
+        mime_type, _ = mimetypes.guess_type(filepath)
+
+        with open(filepath, 'rb') as file_stream:
+            s3_client.upload_fileobj(
+                Fileobj=file_stream,
+                Bucket='storypower-res-bucket-2',
+                Key=upload_key,
+                ExtraArgs={
+                    'ACL': 'public-read',
+                    'ContentType': mime_type or 'application/octet-stream'
+                }
+            )
+        
+        print(f">> upload {filepath} to s3 success")
+    
+    except Exception as e:
+        print(f"Error uploading {filepath}: {e}")
 
 def load_custom_node(module_path, ignore=set()):
     module_name = os.path.basename(module_path)

@@ -1,9 +1,10 @@
 import os
 import time
-
+from datetime import date
 supported_pt_extensions = set(['.ckpt', '.pt', '.bin', '.pth', '.safetensors'])
 
 folder_names_and_paths = {}
+date_str = date.today().strftime("%Y-%m-%d")
 
 base_path = os.path.dirname(os.path.realpath(__file__))
 models_dir = os.path.join(base_path, "models")
@@ -30,8 +31,10 @@ folder_names_and_paths["custom_nodes"] = ([os.path.join(base_path, "custom_nodes
 folder_names_and_paths["hypernetworks"] = ([os.path.join(models_dir, "hypernetworks")], supported_pt_extensions)
 
 folder_names_and_paths["classifiers"] = ([os.path.join(models_dir, "classifiers")], {""})
-
-output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
+ 
+path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
+output_directory = os.path.join(path, date_str)
+# output_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "output")
 temp_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "temp")
 input_directory = os.path.join(os.path.dirname(os.path.realpath(__file__)), "input")
 
