@@ -394,9 +394,8 @@ class PromptServer():
                 progress_percentage = (task_progress["value"] / task_progress["max"]) * 100
                 # 将百分比进度映射到你需要的范围，例如 0 到 100
                 mapped_value = int((progress_percentage / 100) * 100)
-
             else:
-                current_number = []
+                current_number = ""
 
             return web.json_response({
                 "task_total": self.prompt_queue.get_tasks_remaining(),
