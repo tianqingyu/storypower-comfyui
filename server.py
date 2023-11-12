@@ -390,7 +390,7 @@ class PromptServer():
             
             if current_queue[0]:
                 current_number = current_queue[0][0][1]
-                if task_progress and 'value' in task_progress and 'max' in task_progress:
+                if task_progress['max'] != 0:
                     mapped_value = (task_progress["value"] / task_progress["max"]) * 100
             else:
                 current_number = ""
