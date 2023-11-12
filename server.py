@@ -405,7 +405,8 @@ class PromptServer():
                 "task_progress": mapped_value  # 包含task_progress信息
             })
         
-        @routes.get("/file/{prompt_id}") #获取图片名称
+        #获取图片名称
+        @routes.get("/file/{prompt_id}")
         async def get_history(request):
             prompt_id = request.match_info.get("prompt_id", None)
             data = self.prompt_queue.get_history(prompt_id=prompt_id)
@@ -416,7 +417,9 @@ class PromptServer():
                 date_str = date.today().strftime("%Y-%m-%d")
                 output_directory = os.path.join("output", date_str)
                 filename = os.path.join(output_directory, image_name)
-            return web.json_response(filename)
+            return web.json_response({
+                "filename": filename
+            })
         
         @routes.get("/prompt")
         async def get_prompt(request):
