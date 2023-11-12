@@ -390,18 +390,15 @@ class PromptServer():
             
             if current_queue[0]:
                 current_number = current_queue[0][0][1]
-                # 计算百分比进度
-                progress_percentage = (task_progress["value"] / task_progress["max"]) * 100
-                # 将百分比进度映射到你需要的范围，例如 0 到 100
-                mapped_value = int((progress_percentage / 100) * 100)
+                if task_progress and 'value' in task_progress and 'max' in task_progress:
+                    mapped_value = (task_progress["value"] / task_progress["max"]) * 100
             else:
                 current_number = ""
 
             return web.json_response({
                 "task_total": self.prompt_queue.get_tasks_remaining(),
-                # "queue_running": current_queue[0],
                 "task_id": current_number,
-                "task_progress": mapped_value  # 包含task_progress信息
+                "task_progress": mapped_value
             })
         
         #获取图片名称
