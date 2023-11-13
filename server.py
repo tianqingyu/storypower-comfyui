@@ -409,7 +409,9 @@ class PromptServer():
             if data is None or not data:
                 filename = {}
             else:
-                image_name = data[prompt_id]["outputs"]["9"]["images"][0]["filename"]
+                outputs = data[prompt_id]["outputs"]
+                key = next(iter(outputs))
+                image_name = outputs[key]["images"][0]["filename"]
                 date_str = date.today().strftime("%Y-%m-%d")
                 output_directory = os.path.join("output", date_str)
                 filename = os.path.join(output_directory, image_name)
