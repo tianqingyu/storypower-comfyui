@@ -407,7 +407,7 @@ class PromptServer():
             prompt_id = request.match_info.get("prompt_id", None)
             data = self.prompt_queue.get_history(prompt_id=prompt_id)
             if data is None or not data:
-                filename = {}
+                filename = ''
             else:
                 outputs = data[prompt_id]["outputs"]
                 key = next(iter(outputs))
