@@ -69,7 +69,6 @@ def create_cors_middleware(allowed_origin: str):
 class PromptServer():
     def __init__(self, loop):
         PromptServer.instance = self
-        self.global_task_progress = {"value": 0, "max": 0}
         mimetypes.init()
         mimetypes.types_map['.js'] = 'application/javascript; charset=utf-8'
 
@@ -91,7 +90,7 @@ class PromptServer():
         routes = web.RouteTableDef()
         self.routes = routes
         self.last_node_id = None
-        self.client_id = uuid.uuid4().hex
+        self.client_id = None
 
         self.on_prompt_handlers = []
 
@@ -99,15 +98,21 @@ class PromptServer():
         async def websocket_handler(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
-            sid = request.query.get('clientId', self.client_id)
+            sid = request.rel_url.query.get('clientId', '')
+            if sid:
+                # Reusing existing session, remove old
+                self.sockets.pop(sid, None)
+            else:
+                sid = uuid.uuid4().hex
+
             self.sockets[sid] = ws
 
             try:
                 # Send initial state to the new client
                 await self.send("status", { "status": self.get_queue_info(), 'sid': sid }, sid)
                 # On reconnect if we are the currently executing client send the current node
-                # if self.client_id == sid and self.last_node_id is not None:
-                #     await self.send("executing", { "node": self.last_node_id }, sid)
+                if self.client_id == sid and self.last_node_id is not None:
+                    await self.send("executing", { "node": self.last_node_id }, sid)
 
                 async for msg in ws:
                     if msg.type == aiohttp.WSMsgType.ERROR:
@@ -511,10 +516,6 @@ class PromptServer():
                     self.prompt_queue.delete_history_item(id_to_delete)
 
             return web.Response(status=200)
-
-    def update_task_progress(self, value, total):
-        self.global_task_progress["value"] = value
-        self.global_task_progress["max"] = total
 
     def add_routes(self):
         self.app.add_routes(self.routes)
