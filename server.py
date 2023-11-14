@@ -99,7 +99,7 @@ class PromptServer():
         async def websocket_handler(request):
             ws = web.WebSocketResponse()
             await ws.prepare(request)
-            sid = self.client_id
+            sid = request.query.get('clientId', self.client_id)
             self.sockets[sid] = ws
 
             try:
@@ -380,44 +380,6 @@ class PromptServer():
                 ]
             }
             return web.json_response(system_stats)
-        
-        # get task info
-        @routes.get("/task")
-        async def get_task(request):
-            current_queue = self.prompt_queue.get_current_queue()
-            task_progress = self.global_task_progress  # 从全局task_progress字典获取信息
-            mapped_value = 0
-            
-            if current_queue[0]:
-                current_number = current_queue[0][0][1]
-                if task_progress['max'] != 0:
-                    mapped_value = (task_progress["value"] / task_progress["max"]) * 100
-            else:
-                current_number = ""
-
-            return web.json_response({
-                "task_total": self.prompt_queue.get_tasks_remaining(),
-                "task_id": current_number,
-                "task_progress": mapped_value
-            })
-        
-        #获取图片名称
-        @routes.get("/file/{prompt_id}")
-        async def get_history(request):
-            prompt_id = request.match_info.get("prompt_id", None)
-            data = self.prompt_queue.get_history(prompt_id=prompt_id)
-            if data is None or not data:
-                filename = ''
-            else:
-                outputs = data[prompt_id]["outputs"]
-                key = next(iter(outputs))
-                image_name = outputs[key]["images"][0]["filename"]
-                date_str = date.today().strftime("%Y-%m-%d")
-                output_directory = os.path.join("output", date_str)
-                filename = os.path.join(output_directory, image_name)
-            return web.json_response({
-                "filename": filename
-            })
         
         @routes.get("/prompt")
         async def get_prompt(request):
