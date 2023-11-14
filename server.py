@@ -2,7 +2,6 @@ import os
 import sys
 import asyncio
 import traceback
-from datetime import date
 
 import nodes
 import folder_paths
@@ -69,6 +68,7 @@ def create_cors_middleware(allowed_origin: str):
 class PromptServer():
     def __init__(self, loop):
         PromptServer.instance = self
+
         mimetypes.init()
         mimetypes.types_map['.js'] = 'application/javascript; charset=utf-8'
 
@@ -113,7 +113,7 @@ class PromptServer():
                 # On reconnect if we are the currently executing client send the current node
                 if self.client_id == sid and self.last_node_id is not None:
                     await self.send("executing", { "node": self.last_node_id }, sid)
-
+                    
                 async for msg in ws:
                     if msg.type == aiohttp.WSMsgType.ERROR:
                         print('ws connection closed with exception %s' % ws.exception())
@@ -385,7 +385,7 @@ class PromptServer():
                 ]
             }
             return web.json_response(system_stats)
-        
+
         @routes.get("/prompt")
         async def get_prompt(request):
             return web.json_response(self.get_queue_info())
@@ -468,11 +468,11 @@ class PromptServer():
                 prompt = json_data["prompt"]
                 valid = execution.validate_prompt(prompt)
                 extra_data = {}
-                extra_data["client_id"] = self.client_id
-
                 if "extra_data" in json_data:
                     extra_data = json_data["extra_data"]
 
+                if "client_id" in json_data:
+                    extra_data["client_id"] = json_data["client_id"]
                 if valid[0]:
                     prompt_id = str(uuid.uuid4())
                     outputs_to_execute = valid[2]
@@ -516,7 +516,7 @@ class PromptServer():
                     self.prompt_queue.delete_history_item(id_to_delete)
 
             return web.Response(status=200)
-
+        
     def add_routes(self):
         self.app.add_routes(self.routes)
 
