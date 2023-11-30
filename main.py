@@ -52,17 +52,11 @@ import itertools
 import shutil
 import threading
 import gc
-import logging
 
 from comfy.cli_args import args
 
-# 配置日志
-log_filename = f'/home/vantage/apps/logs/app_{args.port}.log'
-logging.basicConfig(filename=log_filename,
-                    level=logging.INFO,
-                    format='[%(levelname)s] %(message)s')
-
 if os.name == "nt":
+    import logging
     logging.getLogger("xformers").addFilter(lambda record: 'A matching Triton is not available' not in record.getMessage())
 
 if __name__ == "__main__":
